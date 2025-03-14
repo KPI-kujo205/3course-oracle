@@ -13,5 +13,14 @@
     <file url="file://$PROJECT_DIR$/lab1/population/jobs.sql" dialect="Oracle" />
     <file url="file://$PROJECT_DIR$/lab1/population/locations.sql" dialect="Oracle" />
     <file url="file://$PROJECT_DIR$/lab2/ddl.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/scripts.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/1_regions.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/2_suppliers.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/3_cetegories.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/4_clients.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/5_items.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/6_item_categories.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/7_orders.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab2/seeds/8_item_orders.sql" dialect="Oracle" />
   </component>
 </project>

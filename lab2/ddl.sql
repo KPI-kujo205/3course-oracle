@@ -82,10 +82,15 @@ CREATE TABLE orders (
     delivered_at TIMESTAMP,
     cancelled_at TIMESTAMP,
     processed_at TIMESTAMP,
-    CONSTRAINT fk_client
-        FOREIGN KEY (client_id)
-        REFERENCES clients(id)
-);
+    RATE_SPEED INTEGER,
+    RATE_QUALITY INTEGER,
+    REASON_CANCELED VARCHAR2(256),
+
+
+        CONSTRAINT fk_client
+            FOREIGN KEY (client_id)
+            REFERENCES clients(id)
+    );
 
 CREATE TABLE item_orders (
     item_id RAW(16) NOT NULL,
