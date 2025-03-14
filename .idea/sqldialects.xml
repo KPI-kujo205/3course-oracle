@@ -26,6 +26,7 @@
     <file url="file://$PROJECT_DIR$/lab3/task1_inner_join.sql" dialect="Oracle" />
     <file url="file://$PROJECT_DIR$/lab3/task1_left_outer_join.sql" dialect="Oracle" />
     <file url="file://$PROJECT_DIR$/lab3/task1_right_outer_join.sql" dialect="Oracle" />
-    <file url="file://$PROJECT_DIR$/lab3/task_8_level.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab3/task1_subtask_8_level.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/lab3/task_2.sql" dialect="Oracle" />
   </component>
 </project>
