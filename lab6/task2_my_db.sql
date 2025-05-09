@@ -1,69 +1,70 @@
-
-/*
-2.1. Створити таблицю з первинним ключем та автоматично генерованим
-значенням первинного ключа
-*/
-
--- TASK1 -- START
-create table ORDER_COMMENTS
-(
-    ID NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    MESSAGE           VARCHAR2(100),
-    CREATED_AT        TIMESTAMP(6) default CURRENT_TIMESTAMP,
-    PARENT_COMMENT_ID NUMBER
-        constraint ORDER_COMMENTS_ORDER_COMMENTS_ID_FK
-            references ORDER_COMMENTS
+-- Create an audit table for logging
+CREATE TABLE ORDER_AUDIT (
+    AUDIT_ID      NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ORDER_ID      RAW(16),
+    ACTION        VARCHAR2(50),
+    ACTION_DATE   TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    DETAILS       VARCHAR2(255)
 );
--- TASK1 -- END
+COMMIT;
+
+-- Combined trigger for the ORDERS table
+CREATE OR REPLACE TRIGGER trg_orders_combined
+    BEFORE INSERT OR UPDATE
+    ON ORDERS
+    FOR EACH ROW
+BEGIN
+    -- BEFORE INSERT: Set CREATED_AT timestamp
+    IF INSERTING THEN
+        :NEW.CREATED_AT := SYSTIMESTAMP;
+    END IF;
+
+    -- BEFORE UPDATE: Set UPDATED_AT timestamp
+    IF UPDATING THEN
+        :NEW.UPDATED_AT := SYSTIMESTAMP;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_orders_after
+    AFTER UPDATE OR DELETE OR INSERT
+    ON ORDERS
+    FOR EACH ROW
+BEGIN
+    -- AFTER INSERT: Log insert action
+    IF INSERTING THEN
+        INSERT INTO ORDER_AUDIT (ORDER_ID, ACTION, DETAILS)
+        VALUES (:NEW.ID, 'INSERTED', 'New order placed');
+    END IF;
+
+    -- AFTER UPDATE: Log update action
+    IF UPDATING THEN
+        INSERT INTO ORDER_AUDIT (ORDER_ID, ACTION, DETAILS)
+        VALUES (:OLD.ID, 'UPDATED', 'Order updated with new details');
+    END IF;
+
+    -- AFTER DELETE: Log delete action
+    IF DELETING THEN
+        INSERT INTO ORDER_AUDIT (ORDER_ID, ACTION, DETAILS)
+        VALUES (:OLD.ID, 'DELETED', 'Order deleted');
+    END IF;
+END;
+/
+
+COMMIT ;
 
 
--- TASK2 -- START
-/*
-    Додати тестові дані
-*/
-insert into ORDER_COMMENTS (MESSAGE)
-select 'Comment ' || to_char (rownum)
-from dual
-connect by level <= 1000;
--- TASK2 -- END
-
-
-/*
-    Додати батьківські ключі
-*/
--- TASK3 -- START
-update ORDER_COMMENTS
-set PARENT_COMMENT_ID = trunc(dbms_random.value (1, 100))
-where id < 1000;
--- TASK3 -- END
-
-
-/*
-
-Виконайте будь-яке завдання на створення ієрархічного запиту.
-Завдання виконайте для двох конструкцій SELF JOIN та CONNECT BY.
-Дослідить час виконання запитів – яка конструкція буде виконуватись швидше?
-
-*/
-
--- TASK4 -- START
-SELECT
-    SYS_CONNECT_BY_PATH(C.MESSAGE || '(' || C.ID || ')', ' -> ') as comment_hierarchy
-FROM
-    ORDER_COMMENTS C
-START WITH
-    C.PARENT_COMMENT_ID = 1
-CONNECT BY
-    PRIOR C.ID = C.PARENT_COMMENT_ID
---
-
-SELECT
-    LEVEL_1.MESSAGE || '(' || LEVEL_1.ID || ')' AS parent_comment,
-    LEVEL_2.MESSAGE || '(' || LEVEL_2.ID || ')' AS child_comment
-FROM
-    ORDER_COMMENTS LEVEL_1
-INNER JOIN
-    ORDER_COMMENTS LEVEL_2 ON LEVEL_1.ID = LEVEL_2.PARENT_COMMENT_ID
-WHERE
-    LEVEL_1.PARENT_COMMENT_ID = 1;
- -- TASK4 -- END
+DECLARE
+    CLIENT_ID RAW(16) := '3041BCBD45B10D28E063020014ACDDA6';
+BEGIN
+    -- Insert statement or further processing
+    INSERT INTO ORDERS (
+        CLIENT_ID,
+        STATUS
+    )
+    VALUES (
+        CLIENT_ID,
+        'ordered' -- Assuming a default status
+    );
+END;
+COMMIT ;
